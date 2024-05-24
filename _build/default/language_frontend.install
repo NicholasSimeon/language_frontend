@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/language_frontend/META"
+  "_build/install/default/lib/language_frontend/dune-package"
+  "_build/install/default/lib/language_frontend/opam"
+]
+bin: [
+  "_build/install/default/bin/language_frontend"
+]

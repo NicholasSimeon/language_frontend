@@ -1,0 +1,5 @@
+(executable
+ (public_name language_frontend)
+ (name main)
+ (libraries language_frontend)
+ (modules lexer parser ast eval main))
