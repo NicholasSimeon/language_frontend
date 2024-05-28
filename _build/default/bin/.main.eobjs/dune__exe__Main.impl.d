@@ -1,1 +1,1 @@
-bin/main.ml: Lexer
+bin/main.ml: Lexer List

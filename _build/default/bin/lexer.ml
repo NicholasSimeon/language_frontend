@@ -68,12 +68,82 @@ type token =
   | TRUE
   | FALSE
 
+let token_to_string token =
+  match token with
+  (*Operators*)
+  | DIV -> "Divide"
+  | SUB -> "Subtract"
+  | MUL -> "Multiply"
+  | ADD -> "Add"
+  | REM -> "Remainder"
+  | AND -> "And"
+  | XOR -> "XOR"
+  | OR -> "Or"
+  | LPAREN -> "Left Paren"
+  | RPAREN -> "Right Paren"
+  | LBRACK -> "Left Bracket"
+  | RBRACK -> "Right Bracket"
+  | LBRACE -> "Left Brace"
+  | RBRACE -> "Right Brace"
+  | ADDEQ -> "Add Equals"
+  | MULEQ -> "Multiply Equals"
+  | SUBEQ -> "Subtract Equals"
+  | DIVEQ -> "Divide Equals"
+  | REMEQ -> "Remainder Equals"
+  | XOREQ -> "XOR Equals"
+  | OREQ -> "Or Equails"
+  | ANDEQ -> "And Equals"
+  | EQ -> "Equal"
+  | NEQ -> "Not Equal"
+  | ASSIGN -> "Assign"
+  | DEFINE -> "Define"
+  | NOT -> "Not"
+  | SEMI -> "Semicolon"
+  | COLON -> "Colon"
+  | GREAT -> "Greater Than"
+  | LESS -> "Less than"
+  | GREQ -> "Greater than or equal to"
+  | LSEQ -> "Less than or equal to"
+  | DOT -> "Dot"
+  | COMMA -> "Comma"
+  | INC -> "Increment"
+  | DEC -> "Decrement"
+  (* BASIC Tokens*)
+  | EOF -> "End of file"
+  | CHAR -> "Char"
+  | STRING -> "String"
+  | INT -> "Int"
+  | FLOAT -> "Float"
+  | HEX -> "Hex"
+  | OCT -> "Octal"
+  | BINARY -> "Binary"
+  | IDENTIFIER -> "Indentifier"
+  (* KEYWORDS *)
+  | IF -> "If"
+  | ELSE -> "Else"
+  | ELIF -> "Elif"
+  | FUN -> "Function"
+  | FOR -> "For"
+  | IN -> "In"
+  | VAR -> "Var"
+  | STRUCT -> "Struct"
+  | MUT -> "Mutable"
+  | IMPORT -> "Import"
+  | AS -> "As"
+  | MOD -> "Mod"
+  | PUBLIC -> "Public"
+  | PRIVATE -> "Private"
+  | RETURN -> "Return"
+  | TRUE -> "True"
+  | FALSE -> "False"
+
 let rec create_float input pos str =
   if pos < String.length input && '0' <= input.[pos] && input.[pos] <= '9' then
-    create_float input pos (str ^ String.make 1 input.[pos])
+    create_float input (pos + 1) (str ^ String.make 1 input.[pos])
   else (FLOAT, str, pos)
 
 let rec create_hex input pos str =
+  let () = print_endline str in
   if
     pos < String.length input
     && (('0' <= input.[pos] && input.[pos] <= '9')
@@ -95,7 +165,7 @@ let rec create_binary input pos str =
 let rec create_number input pos str =
   if pos < String.length input && '0' <= input.[pos] && input.[pos] <= '9' then
     create_number input (pos + 1) (str ^ String.make 1 input.[pos])
-  else if input.[pos + 1] == '.' then create_float input (pos + 1) (str ^ ".")
+  else if input.[pos] == '.' then create_float input (pos + 1) (str ^ ".")
   else (INT, str, pos)
 
 let rec create_identifier input pos str =
@@ -176,24 +246,24 @@ let rec create_operator input pos str =
     | _ -> failwith "Unknown operator"
 
 let rec create_string input pos str =
-  if pos <= String.length input && input.[pos] != '"' then
+  if pos < String.length input && input.[pos] != '"' then
     create_string input (pos + 1) (str ^ String.make 1 input.[pos])
   else
     match input.[pos] with
-    | '"' ->
-        let () = print_endline "Expected '\"'" in
+    | '"' -> (STRING, pos + 1, str ^ String.make 1 input.[pos])
+    | _ ->
+        let () = print_endline "Expected \"" in
         (EOF, pos, str)
-    | _ -> (STRING, pos, str)
 
 let rec create_char input pos str =
-  if pos <= String.length input && input.[pos] != '\'' then
+  if pos < String.length input && input.[pos] != '\'' then
     create_char input (pos + 1) (str ^ String.make 1 input.[pos])
   else
     match input.[pos] with
-    | '\'' ->
-        let () = print_endline "Expected  '\'' " in
+    | '\'' -> (CHAR, pos + 1, str ^ String.make 1 input.[pos])
+    | _ ->
+        let () = print_endline "Expected  ' " in
         (EOF, pos, str)
-    | _ -> (STRING, pos, str)
 
 let string_to_token input =
   let rec create_tokens pos tokens =
@@ -208,16 +278,16 @@ let string_to_token input =
             else
               match input.[pos + 1] with
               | 'x' | 'X' ->
-                  let _type, _str, _new_pos = create_hex input (pos + 1) "0x" in
+                  let _type, _str, _new_pos = create_hex input (pos + 2) "0x" in
                   create_tokens _new_pos (tokens @ [ _type ])
               | 'b' | 'B' ->
                   let _type, _new_pos, _str =
-                    create_binary input (pos + 1) "0x"
+                    create_binary input (pos + 2) "0b"
                   in
                   create_tokens _new_pos (tokens @ [ _type ])
               | 'o' | 'O' ->
                   let _type, _new_pos, _str =
-                    create_octal input (pos + 1) "0x"
+                    create_octal input (pos + 2) "0o"
                   in
                   create_tokens _new_pos (tokens @ [ _type ])
               | _ ->
@@ -242,13 +312,11 @@ let string_to_token input =
           create_tokens _new_pos (tokens @ [ _type ])
       | ('a' .. 'z' | 'A' .. 'Z' | '_') as c ->
           let _type, _new_pos, _str =
-            create_identifier input pos (String.make 1 c)
+            create_identifier input (pos + 1) (String.make 1 c)
           in
           create_tokens _new_pos (tokens @ [ _type ])
-      | ('!' .. '/' | ':' .. '@' | '[' .. '`' | '{' .. '~') as c ->
-          let _type, _new_pos, _str =
-            create_operator input pos (String.make 1 c)
-          in
+      | '!' .. '/' | ':' .. '@' | '[' .. '`' | '{' .. '~' ->
+          let _type, _new_pos, _str = create_operator input pos "" in
           create_tokens _new_pos (tokens @ [ _type ])
       | _ -> failwith "Unknown character"
   in

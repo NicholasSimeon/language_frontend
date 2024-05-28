@@ -1,10 +1,14 @@
-open Lexer
+open! Lexer
 
 let tokenizer =
   let () = print_string "main> " in
   let string = read_line () in
-  string
+  string ^ " "
 
-let f elem =
-  let () = print_endline elem in
-  List.iter f Lexer.string_to_token tokenizer
+let tokens = Lexer.string_to_token tokenizer
+
+let () =
+  for i = 0 to List.length tokens - 1 do
+    let x = Lexer.token_to_string (List.nth tokens i) in
+    print_endline x
+  done
