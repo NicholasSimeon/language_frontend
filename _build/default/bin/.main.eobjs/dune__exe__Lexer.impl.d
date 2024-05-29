@@ -1,1 +1,1 @@
-bin/lexer.ml: String
+bin/lexer.ml: String Token

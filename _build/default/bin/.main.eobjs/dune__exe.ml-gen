@@ -14,3 +14,9 @@ module Main = Dune__exe__Main
 
 (** @canonical Dune__exe.Parser *)
 module Parser = Dune__exe__Parser
+
+(** @canonical Dune__exe.Parserrules *)
+module Parserrules = Dune__exe__Parserrules
+
+(** @canonical Dune__exe.Token *)
+module Token = Dune__exe__Token

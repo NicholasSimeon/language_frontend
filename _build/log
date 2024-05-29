@@ -1,4 +1,4 @@
-# dune exec language_frontend
+# dune build
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Shared cache location: /home/nick/.cache/dune/db
@@ -13,4 +13,9 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /usr/bin/ocamlc.opt -config > /tmp/dune_ca61d5_output
+$ /usr/bin/ocamlc.opt -config > /tmp/dune_b06532_output
+$ (cd _build/default && /usr/bin/ocamldep.opt -modules -impl bin/main.ml) > _build/default/bin/.main.eobjs/dune__exe__Main.impl.d
+$ (cd _build/default && /usr/bin/ocamldep.opt -modules -impl bin/parser.ml) > _build/default/bin/.main.eobjs/dune__exe__Parser.impl.d
+> File "bin/parser.ml", line 14, characters 0-0:
+> Error: Syntax error
+[2]
