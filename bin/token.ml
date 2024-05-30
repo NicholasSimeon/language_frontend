@@ -8,6 +8,8 @@ type token =
   | AND (* & *)
   | XOR (* ^ *)
   | OR (* | *)
+  | SRIGHT (* >> *)
+  | SLEFT (* << *)
   | LPAREN (* ( *)
   | RPAREN (* ) *)
   | LBRACK (* [ *)
@@ -33,6 +35,8 @@ type token =
   | LESS (* < *)
   | GREQ (* >= *)
   | LSEQ (* <= *)
+  | LOR (* || *)
+  | LAND (* && *)
   | DOT (* . *)
   | COMMA (* , *)
   | INC (* ++ *)
@@ -76,6 +80,8 @@ let token_to_string token =
   | REM -> " % "
   | AND -> " & "
   | XOR -> " ^ "
+  | SRIGHT -> " >> "
+  | SLEFT -> " << "
   | OR -> " | "
   | LPAREN -> " ( "
   | RPAREN -> " ) "
@@ -102,6 +108,8 @@ let token_to_string token =
   | LESS -> " < "
   | GREQ -> " >= "
   | LSEQ -> " <= "
+  | LOR -> " || "
+  | LAND -> " && "
   | DOT -> " . "
   | COMMA -> " , "
   | INC -> " ++ "

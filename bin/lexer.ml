@@ -77,6 +77,8 @@ let rec create_operator input pos str =
     | "%" -> (Token.REM, pos, str)
     | "&" -> (Token.AND, pos, str)
     | "^" -> (Token.XOR, pos, str)
+    | ">>" -> (Token.SRIGHT, pos, str)
+    | "<<" -> (Token.SLEFT, pos, str)
     | "|" -> (Token.OR, pos, str)
     | "(" -> (Token.LPAREN, pos, str)
     | ")" -> (Token.RPAREN, pos, str)
@@ -103,9 +105,10 @@ let rec create_operator input pos str =
     | "<" -> (Token.LESS, pos, str)
     | ">=" -> (Token.GREQ, pos, str)
     | "<=" -> (Token.LSEQ, pos, str)
+    | "||" -> (Token.LOR, pos, str)
+    | "&&" -> (Token.LAND, pos, str)
     | "." -> (Token.DOT, pos, str)
     | "," -> (Token.COMMA, pos, str)
-    | "++" -> (Token.INC, pos, str)
     | "--" -> (Token.DEC, pos, str)
     | _ -> failwith "Unknown operator"
 

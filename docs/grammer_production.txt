@@ -1,0 +1,97 @@
+program' ::= program
+program ::= statement*
+
+Number ::= Integer | Float | Hex | Octal | Binary
+Integer ::= [0-9]+
+Float ::= [0-9]+ "." [0-9]+
+Identifier ::= [a-zA-Z_][a-zA-Z0-9_]*
+Hex ::= "0x" [0-9a-fA-F]+
+Octal ::= "0o" [0-7]+
+Binary ::= "0b" [01]+
+
+Primary = Number
+Primary = Identifier
+Primary = "(" Expression ")"
+Primary = FunctionCall
+
+Expression ::= Logicalor
+Logicalor ::= Logicaland ("||" Logicaland)*
+Logicalor ::= Logicaland
+Logicalor ::= Logicaland "||" Logicalor
+
+Logicaland ::= Bitwiseor ("&&" Bitwiseor)*
+Logicaland ::= Bitwiseor
+Logicaland ::= Bitwiseor "&&" Logicaland
+
+
+Bitwiseor ::= Bitwisexor ("|" Bitwisexor)*
+Bitwiseor ::= Bitwisexor
+Bitwiseor ::= Bitwisexor "|" Logicalor
+
+
+Bitwisexor ::= Bitwiseand ("^" Bitwiseand)*
+Bitwisexor ::= Bitwiseand
+Bitwisexor ::= Bitwiseand "^" Bitwisexor
+
+Bitwiseand ::= Equality ("&" Equality)*
+Bitwiseand ::= Equality
+Bitwiseand ::= Equality "&" Bitwiseand
+
+Equality ::= Relational (("==" | "!=") Relational)*
+Equality ::= Relational
+Equality ::= Relational ("==" | "!=") Equality
+
+Relational ::= Shift (("<" | ">" | "<=" | ">=") Shift)*
+Relational ::= Shift
+Relational ::= Shift ("<" | ">" | "<=" | ">=") Relational
+
+Shift ::= Additive (("<<" | ">>") Additive)*
+Shift ::= Additive
+Shift ::= Additive ("<<" | ">>") Shift
+
+Additive ::= Multiplicative (("+" | "-") Multiplicative)*
+Additive ::= Multiplicative 
+Additive ::= Multiplicative ("+" | "-") Additive
+
+Multiplicative ::= Unary (("*" | "/" | "%") Unary)*
+Multiplicative ::= Unary
+Multiplicative ::= Unary ("*" | "/" | "%") Multiplicative
+
+
+Unary = Primary
+Unary = "++" Primary
+Unary = "--" Primary
+Unary = "-" Primary
+Unary = "!" Primary
+Unary = "~" Primary
+
+FunctionCall ::= Identifier "(" [ArgumentList] ")"
+
+ArgumentList ::= Expression ("," Expression)*
+ArugmentList ::= Expression
+ArugmentList ::= Expression "," ArgumentList
+
+Statement ::= Assignment 
+Statement ::= Expression ";" 
+Statement ::= IfStatement 
+Statement ::= WhileStatement 
+Statement ::= FunctionDef 
+Statement ::= ReturnStatement
+
+Block ::= Statement
+Block ::= Statement Block
+
+Assignment ::= Identifier "=" Expression ";"
+
+IfStatement ::= "if" "(" Expression ")" "{" Block "}" "else" "{" Statement* "}"
+IfStatement ::= "if" "(" Expression ")" "{" Block "}" "else" "{" Block "}"
+WhileStatement ::= "while" "(" Expression ")" "{" Block "}"
+FunctionDef ::= identifier "(" ParameterList ")" "{" Block "}"
+FunctionDef ::= identifier "("  ")" "{ Block "}"
+
+ParameterList ::=  Identifier ("," Identifier)*
+ParameterList ::=  Identifier 
+ParameterList ::=  Identifier "," ParameterList
+
+ReturnStatement ::= "return" Expression ";"
+
